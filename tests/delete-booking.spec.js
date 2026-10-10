@@ -1,5 +1,6 @@
 const { test, expect } = require('@playwright/test');
 const { newBooking } = require('../data/booking');
+const { getToken } = require('../utils/auth');
 
 test.describe('DELETE /booking/:id', () => {
   let id;
@@ -7,11 +8,7 @@ test.describe('DELETE /booking/:id', () => {
 
   test.beforeEach(async ({ request }) => {
     // Obtener token
-    const authResponse = await request.post('/auth', {
-      data: { username: 'admin', password: 'password123' },
-    });
-    const authBody = await authResponse.json();
-    token = authBody.token;
+    token = await getToken(request);
 
     // Crear una reserva para borrar
     const createResponse = await request.post('/booking', { data: newBooking() });
