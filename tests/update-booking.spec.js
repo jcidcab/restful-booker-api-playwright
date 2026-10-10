@@ -1,4 +1,5 @@
 const { test, expect } = require('@playwright/test');
+const { newBooking } = require('../data/booking');
 
 test.describe('Actualizar reserva', () => {
   let id;
@@ -13,19 +14,7 @@ test.describe('Actualizar reserva', () => {
     token = authBody.token;
 
     // Crear una reserva para actualizar
-    const createResponse = await request.post('/booking', {
-      data: {
-        firstname: 'Juan',
-        lastname: 'Cid',
-        totalprice: 150000,
-        depositpaid: true,
-        bookingdates: {
-          checkin: '2026-11-01',
-          checkout: '2026-11-05',
-        },
-        additionalneeds: 'Breakfast',
-      },
-    });
+    const createResponse = await request.post('/booking', { data: newBooking() });
     const createBody = await createResponse.json();
     id = createBody.bookingid;
   });
@@ -33,17 +22,14 @@ test.describe('Actualizar reserva', () => {
   test('PUT reemplaza la reserva completa', async ({ request }) => {
     const response = await request.put(`/booking/${id}`, {
       headers: { Cookie: `token=${token}` },
-      data: {
+      data: newBooking({
         firstname: 'Pedro',
         lastname: 'Soto',
         totalprice: 200000,
         depositpaid: false,
-        bookingdates: {
-          checkin: '2026-12-01',
-          checkout: '2026-12-10',
-        },
+        bookingdates: { checkin: '2026-12-01', checkout: '2026-12-10' },
         additionalneeds: 'Dinner',
-      },
+}),
     });
 
     expect(response.status()).toBe(200);

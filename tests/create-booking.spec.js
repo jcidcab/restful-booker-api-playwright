@@ -1,18 +1,9 @@
 const { test, expect } = require('@playwright/test');
+const { newBooking } = require('../data/booking');
 
 test.describe('POST /booking', () => {
   test('crear una reserva devuelve los datos enviados', async ({ request }) => {
-    const nuevaReserva = {
-      firstname: 'Juan',
-      lastname: 'Cid',
-      totalprice: 150000,
-      depositpaid: true,
-      bookingdates: {
-        checkin: '2026-11-01',
-        checkout: '2026-11-05',
-      },
-      additionalneeds: 'Breakfast',
-    };
+    const nuevaReserva = newBooking();
 
     const response = await request.post('/booking', { data: nuevaReserva });
 
@@ -25,18 +16,7 @@ test.describe('POST /booking', () => {
   });
 
   test('validación de fechas', async ({ request }) => {
-    const validarFecha = {
-      firstname: 'Juan',
-      lastname: 'Cid',
-      totalprice: 150000,
-      depositpaid: true,
-      bookingdates: {
-        checkin: '2026-11-01',
-        checkout: '2026-11-05',
-      },
-      additionalneeds: 'Breakfast',
-    };
-
+    const validarFecha = newBooking();
     const response = await request.post('/booking', { data: validarFecha });
 
     expect(response.status()).toBe(200);

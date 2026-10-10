@@ -4,7 +4,7 @@ test.describe('GET /booking', () => {
   let response;
 
   test.beforeEach(async ({ request }) => {
-    response = await request.get('https://restful-booker.herokuapp.com/booking');
+  response = await request.get('/booking');
   });
 
   test('devuelve status 200', async () => {

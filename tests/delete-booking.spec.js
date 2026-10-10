@@ -1,4 +1,5 @@
 const { test, expect } = require('@playwright/test');
+const { newBooking } = require('../data/booking');
 
 test.describe('DELETE /booking/:id', () => {
   let id;
@@ -13,19 +14,7 @@ test.describe('DELETE /booking/:id', () => {
     token = authBody.token;
 
     // Crear una reserva para borrar
-    const createResponse = await request.post('/booking', {
-      data: {
-        firstname: 'Juan',
-        lastname: 'Cid',
-        totalprice: 150000,
-        depositpaid: true,
-        bookingdates: {
-          checkin: '2026-11-01',
-          checkout: '2026-11-05',
-        },
-        additionalneeds: 'Breakfast',
-      },
-    });
+    const createResponse = await request.post('/booking', { data: newBooking() });
     const createBody = await createResponse.json();
     id = createBody.bookingid;
   });
@@ -40,5 +29,13 @@ test.describe('DELETE /booking/:id', () => {
     // 2. Confirmar que ya no existe
     const getResponse = await request.get(`/booking/${id}`);
     expect(getResponse.status()).toBe(404);
+  });
+
+    test('eliminar sin token devuelve 403 y la reserva sigue existiendo', async ({ request }) => {
+    const deleteResponse = await request.delete(`/booking/${id}`);
+    expect(deleteResponse.status()).toBe(403);
+
+    const getResponse = await request.get(`/booking/${id}`);
+    expect(getResponse.status()).toBe(200);
   });
 });
