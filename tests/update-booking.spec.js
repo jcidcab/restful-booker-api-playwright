@@ -72,4 +72,13 @@ test.describe('Actualizar reserva', () => {
 
     expect(response.status()).toBe(403);
   });
+
+    test('PATCH con token inválido devuelve 403', async ({ request }) => {
+    const response = await request.patch(`/booking/${id}`, {
+      headers: { Cookie: 'token=abc123falso' },
+      data: { lastname: 'Soto' },
+    });
+
+    expect(response.status()).toBe(403);
+  });
 });
